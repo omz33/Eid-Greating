@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eid Greeting Card Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #efe4dc;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px 14px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 430px;
+      background: #f5f5f5;
+      border-radius: 28px;
+      padding: 26px 18px 28px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    input {
+      width: 100%;
+      height: 64px;
+      border: 4px solid #111;
+      border-radius: 18px;
+      font-size: 28px;
+      text-align: center;
+      outline: none;
+      background: #fff;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .generate-btn {
+      height: 64px;
+      background: #000;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+
+    .preview-box {
+      width: 100%;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      display: none;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    canvas {
+      width: 100%;
+      display: block;
+    }
+
+    .download-btn {
+      height: 70px;
+      background: #28b45d;
+      color: #fff;
+      display: none;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="input-group">
+      <input type="text" id="nameInput" placeholder="Enter your name" />
+    </div>
+
+    <button class="generate-btn" id="generateBtn">Generate Greeting</button>
+
+    <div class="preview-box" id="previewBox">
+      <canvas id="cardCanvas"></canvas>
+    </div>
+
+    <button class="download-btn" id="downloadBtn">Download Image</button>
+
+    <div class="note">
+      Please put your name here then press generate
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // PUT YOUR IMAGE HERE
+    // =========================
+    const TEMPLATE_SRC = "Image2.jpeg";
+
+    // Name position
+    const NAME_X_RATIO = 0.5;
+    const NAME_Y_RATIO = 0.72;
+
+    // Font style
+    const FONT_SIZE_RATIO = 0.045;
+    const FONT_WEIGHT = "700";
+    const FONT_FAMILY = "Arial";
+    const NAME_COLOR = "#6b5b4b";
+    const STROKE_COLOR = "#ffffff";
+    const STROKE_WIDTH = 2;
+
+    const nameInput = document.getElementById("nameInput");
+    const generateBtn = document.getElementById("generateBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const previewBox = document.getElementById("previewBox");
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function drawCard() {
+      const userName = nameInput.value.trim();
+
+      if (!userName) {
+        alert("Please enter a name first.");
+        return;
+      }
+
+      const img = new Image();
+
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        const nameX = canvas.width * NAME_X_RATIO;
+        const nameY = canvas.height * NAME_Y_RATIO;
+        const fontSize = Math.max(28, canvas.width * FONT_SIZE_RATIO);
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = NAME_COLOR;
+        ctx.strokeStyle = STROKE_COLOR;
+        ctx.lineWidth = STROKE_WIDTH;
+        ctx.font = `${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`;
+
+        ctx.strokeText(userName, nameX, nameY);
+        ctx.fillText(userName, nameX, nameY);
+        ctx.restore();
+
+        previewBox.style.display = "block";
+        downloadBtn.style.display = "block";
+      };
+
+      img.onerror = function () {
+        alert("Image not found. Make sure TEMPLATE_SRC path is correct.");
+      };
+
+      img.src = TEMPLATE_SRC + "?v=" + Date.now();
+    }
+
+    generateBtn.addEventListener("click", drawCard);
+
+    nameInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        drawCard();
+      }
+    });
+
+    downloadBtn.addEventListener("click", function () {
+      const link = document.createElement("a");
+      const safeName = (nameInput.value.trim() || "greeting-card")
+        .replace(/[^\u0600-\u06FFa-zA-Z0-9-_ ]/g, "");
+
+      link.download = `${safeName}-eid-card.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  </script>
+</body>
+</html>
