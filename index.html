@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eid Greeting Card Generator</title>
+  <title>مولد بطاقة تهنئة العيد</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Cinzel:wght@700;800;900&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -11,7 +16,7 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: "Cairo", Arial, sans-serif;
       background: #efe4dc;
       display: flex;
       justify-content: center;
@@ -23,26 +28,62 @@
     .wrapper {
       width: 100%;
       max-width: 430px;
-      background: #f5f5f5;
+      background: #f8f6f3;
       border-radius: 28px;
-      padding: 26px 18px 28px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+      padding: 24px 18px 26px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .lang-toggle-btn {
+      width: auto;
+      min-width: 120px;
+      height: 48px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(180deg, #c89a45 0%, #9f6f26 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transition: 0.2s ease;
+      font-family: "Cairo", Arial, sans-serif;
+    }
+
+    .lang-toggle-btn:hover {
+      transform: translateY(-1px);
     }
 
     .input-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     input {
       width: 100%;
       height: 64px;
-      border: 4px solid #111;
+      border: 3px solid #1c1a18;
       border-radius: 18px;
-      font-size: 28px;
+      font-size: 25px;
       text-align: center;
       outline: none;
+      background: #eef2fb;
+      font-weight: 800;
+      font-family: "Cairo", Arial, sans-serif;
+      color: #1d1d1d;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border-color: #9f7b3f;
+      box-shadow: 0 0 0 4px rgba(183, 145, 70, 0.12);
       background: #fff;
-      font-weight: bold;
     }
 
     button {
@@ -50,9 +91,10 @@
       border: none;
       border-radius: 18px;
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 800;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.2s ease;
+      font-family: "Cairo", Arial, sans-serif;
     }
 
     button:hover {
@@ -61,9 +103,9 @@
 
     .generate-btn {
       height: 64px;
-      background: #000;
+      background: #111;
       color: #fff;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .preview-box {
@@ -72,8 +114,8 @@
       border-radius: 20px;
       overflow: hidden;
       display: none;
-      margin-bottom: 22px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     }
 
     canvas {
@@ -82,67 +124,232 @@
     }
 
     .download-btn {
-      height: 70px;
-      background: #28b45d;
+      height: 68px;
+      background: linear-gradient(180deg, #2fc568 0%, #24a754 100%);
       color: #fff;
       display: none;
     }
 
     .note {
       margin-top: 14px;
-      font-size: 13px;
-      color: #666;
-      line-height: 1.8;
+      font-size: 14px;
+      color: #625d58;
+      line-height: 1.9;
       text-align: center;
+      font-weight: 600;
+    }
+
+    html[dir="ltr"] body {
+      font-family: Arial, sans-serif;
+    }
+
+    html[dir="ltr"] input,
+    html[dir="ltr"] .generate-btn,
+    html[dir="ltr"] .download-btn,
+    html[dir="ltr"] .lang-toggle-btn {
+      font-family: Arial, sans-serif;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <div class="input-group">
-      <input type="text" id="nameInput" placeholder="Enter your name" />
+    <div class="top-bar">
+      <button class="lang-toggle-btn" id="langToggleBtn">English</button>
     </div>
 
-    <button class="generate-btn" id="generateBtn">Generate Greeting</button>
+    <div class="input-group">
+      <input
+        type="text"
+        id="nameInput"
+        placeholder="اكتب اسمك هنا"
+        autocomplete="off"
+      />
+    </div>
+
+    <button class="generate-btn" id="generateBtn">إنشاء المعايدة</button>
 
     <div class="preview-box" id="previewBox">
       <canvas id="cardCanvas"></canvas>
     </div>
 
-    <button class="download-btn" id="downloadBtn">Download Image</button>
+    <button class="download-btn" id="downloadBtn">تحميل الصورة</button>
 
-    <div class="note">
-      Please put your name here then press generate
+    <div class="note" id="noteText">
+      اكتب الاسم ثم اضغط على إنشاء المعايدة
     </div>
   </div>
 
   <script>
     const TEMPLATE_SRC = "Image3.jpeg";
 
-    // Name position
-    const NAME_X_RATIO = 0.5;
-    const NAME_Y_RATIO = 0.86;
+    const CONFIG = {
+      nameXRatio: 0.5,
+      nameYRatioArabic: 0.805,
+      nameYRatioEnglish: 0.808,
+      maxTextWidthRatio: 0.70,
+      arabicFontSizeRatio: 0.086,
+      englishFontSizeRatio: 0.078,
+      minFontSize: 30,
+      maxFontSize: 88,
+      strokeWidthRatio: 0.008,
+      glowOpacity: 0.42
+    };
 
-    // Font style
-    const FONT_SIZE_RATIO = 0.085;
-    const FONT_WEIGHT = "900";
-    const FONT_FAMILY = "Tahoma, Arial, sans-serif";
-    const NAME_COLOR = "#f7d774";
-    const STROKE_COLOR = "#3b2514";
-    const STROKE_WIDTH = 5;
+    const translations = {
+      ar: {
+        pageTitle: "مولد بطاقة تهنئة العيد",
+        placeholder: "اكتب اسمك هنا",
+        generate: "إنشاء المعايدة",
+        download: "تحميل الصورة",
+        note: "اكتب الاسم ثم اضغط على إنشاء المعايدة",
+        toggle: "English",
+        emptyAlert: "الرجاء إدخال الاسم أولاً",
+        imageError: "لم يتم العثور على الصورة. تأكد من أن اسم الملف Image3.jpeg صحيح.",
+        defaultFileName: "بطاقة-عيد"
+      },
+      en: {
+        pageTitle: "Eid Greeting Card Generator",
+        placeholder: "Enter your name here",
+        generate: "Generate Greeting",
+        download: "Download Image",
+        note: "Enter your name, then click generate",
+        toggle: "العربية",
+        emptyAlert: "Please enter a name first.",
+        imageError: "Image not found. Make sure the file name Image3.jpeg is correct.",
+        defaultFileName: "eid-card"
+      }
+    };
 
+    let currentLang = "ar";
+
+    const htmlEl = document.documentElement;
     const nameInput = document.getElementById("nameInput");
     const generateBtn = document.getElementById("generateBtn");
     const downloadBtn = document.getElementById("downloadBtn");
+    const langToggleBtn = document.getElementById("langToggleBtn");
+    const noteText = document.getElementById("noteText");
     const previewBox = document.getElementById("previewBox");
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
 
+    function isArabicText(text) {
+      return /[\u0600-\u06FF]/.test(text);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+
+      htmlEl.lang = lang;
+      htmlEl.dir = lang === "ar" ? "rtl" : "ltr";
+      document.title = t.pageTitle;
+
+      nameInput.placeholder = t.placeholder;
+      generateBtn.textContent = t.generate;
+      downloadBtn.textContent = t.download;
+      noteText.textContent = t.note;
+      langToggleBtn.textContent = t.toggle;
+    }
+
+    function toggleLanguage() {
+      const newLang = currentLang === "ar" ? "en" : "ar";
+      applyLanguage(newLang);
+    }
+
+    function getTextSettings(text, canvasWidth, canvasHeight) {
+      const arabic = isArabicText(text);
+
+      return {
+        arabic,
+        family: arabic
+          ? '"Cairo", Tahoma, Arial, sans-serif'
+          : '"Cinzel", Georgia, serif',
+        weight: arabic ? 900 : 800,
+        baseSize: clamp(
+          canvasWidth * (arabic ? CONFIG.arabicFontSizeRatio : CONFIG.englishFontSizeRatio),
+          CONFIG.minFontSize,
+          CONFIG.maxFontSize
+        ),
+        maxWidth: canvasWidth * CONFIG.maxTextWidthRatio,
+        x: canvasWidth * CONFIG.nameXRatio,
+        y: canvasHeight * (arabic ? CONFIG.nameYRatioArabic : CONFIG.nameYRatioEnglish),
+        strokeWidth: Math.max(3, canvasWidth * CONFIG.strokeWidthRatio)
+      };
+    }
+
+    function fitFontSize(text, settings) {
+      let size = settings.baseSize;
+
+      while (size > CONFIG.minFontSize) {
+        ctx.font = `${settings.weight} ${size}px ${settings.family}`;
+        if (ctx.measureText(text).width <= settings.maxWidth) break;
+        size -= 1;
+      }
+
+      return size;
+    }
+
+    function createGoldGradient(y, fontSize) {
+      const gradient = ctx.createLinearGradient(0, y - fontSize, 0, y + fontSize * 0.6);
+      gradient.addColorStop(0, "#fff6cf");
+      gradient.addColorStop(0.22, "#ffe58d");
+      gradient.addColorStop(0.45, "#f4c95f");
+      gradient.addColorStop(0.68, "#c98d2e");
+      gradient.addColorStop(0.86, "#fff0b0");
+      gradient.addColorStop(1, "#b97a1d");
+      return gradient;
+    }
+
+    function drawLuxuryText(text, settings) {
+      const fontSize = fitFontSize(text, settings);
+
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.lineJoin = "round";
+      ctx.miterLimit = 2;
+      ctx.font = `${settings.weight} ${fontSize}px ${settings.family}`;
+
+      const gradient = createGoldGradient(settings.y, fontSize);
+
+      ctx.save();
+      ctx.shadowColor = `rgba(255, 212, 102, ${CONFIG.glowOpacity})`;
+      ctx.shadowBlur = fontSize * 0.35;
+      ctx.fillStyle = "rgba(255, 220, 120, 0.18)";
+      ctx.fillText(text, settings.x, settings.y);
+      ctx.restore();
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.34)";
+      ctx.shadowBlur = fontSize * 0.18;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 4;
+      ctx.strokeStyle = "#4a2d16";
+      ctx.lineWidth = settings.strokeWidth;
+      ctx.strokeText(text, settings.x, settings.y);
+      ctx.fillStyle = gradient;
+      ctx.fillText(text, settings.x, settings.y);
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,0.20)";
+      ctx.lineWidth = Math.max(1, settings.strokeWidth * 0.22);
+      ctx.strokeText(text, settings.x, settings.y - 1);
+      ctx.restore();
+
+      ctx.restore();
+    }
+
     function drawCard() {
       const userName = nameInput.value.trim();
+      const t = translations[currentLang];
 
       if (!userName) {
-        alert("Please enter a name first.");
+        alert(t.emptyAlert);
         return;
       }
 
@@ -155,35 +362,15 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
 
-        const nameX = canvas.width * NAME_X_RATIO;
-        const nameY = canvas.height * NAME_Y_RATIO;
-        const fontSize = Math.max(40, canvas.width * FONT_SIZE_RATIO);
-
-        ctx.save();
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = NAME_COLOR;
-        ctx.strokeStyle = STROKE_COLOR;
-        ctx.lineWidth = STROKE_WIDTH;
-        ctx.lineJoin = "round";
-        ctx.miterLimit = 2;
-        ctx.font = `${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`;
-
-        ctx.shadowColor = "rgba(0,0,0,0.35)";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 3;
-
-        ctx.strokeText(userName, nameX, nameY);
-        ctx.fillText(userName, nameX, nameY);
-        ctx.restore();
+        const settings = getTextSettings(userName, canvas.width, canvas.height);
+        drawLuxuryText(userName, settings);
 
         previewBox.style.display = "block";
         downloadBtn.style.display = "block";
       };
 
       img.onerror = function () {
-        alert("Image not found. Make sure TEMPLATE_SRC path is correct.");
+        alert(t.imageError);
       };
 
       img.src = TEMPLATE_SRC + "?v=" + Date.now();
@@ -197,15 +384,20 @@
       }
     });
 
-    downloadBtn.addEventListener("click", function () {
-      const link = document.createElement("a");
-      const safeName = (nameInput.value.trim() || "greeting-card")
-        .replace(/[^\u0600-\u06FFa-zA-Z0-9-_ ]/g, "");
+    langToggleBtn.addEventListener("click", toggleLanguage);
 
+    downloadBtn.addEventListener("click", function () {
+      const t = translations[currentLang];
+      const rawName = nameInput.value.trim() || t.defaultFileName;
+      const safeName = rawName.replace(/[^\u0600-\u06FFa-zA-Z0-9-_ ]/g, "").trim() || t.defaultFileName;
+
+      const link = document.createElement("a");
       link.download = `${safeName}-eid-card.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     });
+
+    applyLanguage("ar");
   </script>
 </body>
 </html>
