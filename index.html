@@ -117,22 +117,19 @@
   </div>
 
   <script>
-    // =========================
-    // PUT YOUR IMAGE HERE
-    // =========================
-    const TEMPLATE_SRC = "Image2.jpeg";
+    const TEMPLATE_SRC = "Image3.jpeg";
 
     // Name position
     const NAME_X_RATIO = 0.5;
-    const NAME_Y_RATIO = 0.72;
+    const NAME_Y_RATIO = 0.86;
 
     // Font style
-    const FONT_SIZE_RATIO = 0.045;
-    const FONT_WEIGHT = "700";
-    const FONT_FAMILY = "Arial";
-    const NAME_COLOR = "#6b5b4b";
-    const STROKE_COLOR = "#ffffff";
-    const STROKE_WIDTH = 2;
+    const FONT_SIZE_RATIO = 0.085;
+    const FONT_WEIGHT = "900";
+    const FONT_FAMILY = "Tahoma, Arial, sans-serif";
+    const NAME_COLOR = "#f7d774";
+    const STROKE_COLOR = "#3b2514";
+    const STROKE_WIDTH = 5;
 
     const nameInput = document.getElementById("nameInput");
     const generateBtn = document.getElementById("generateBtn");
@@ -160,7 +157,7 @@
 
         const nameX = canvas.width * NAME_X_RATIO;
         const nameY = canvas.height * NAME_Y_RATIO;
-        const fontSize = Math.max(28, canvas.width * FONT_SIZE_RATIO);
+        const fontSize = Math.max(40, canvas.width * FONT_SIZE_RATIO);
 
         ctx.save();
         ctx.textAlign = "center";
@@ -168,7 +165,14 @@
         ctx.fillStyle = NAME_COLOR;
         ctx.strokeStyle = STROKE_COLOR;
         ctx.lineWidth = STROKE_WIDTH;
+        ctx.lineJoin = "round";
+        ctx.miterLimit = 2;
         ctx.font = `${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`;
+
+        ctx.shadowColor = "rgba(0,0,0,0.35)";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 3;
 
         ctx.strokeText(userName, nameX, nameY);
         ctx.fillText(userName, nameX, nameY);
